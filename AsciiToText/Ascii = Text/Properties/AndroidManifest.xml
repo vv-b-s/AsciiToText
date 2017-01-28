@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="Ascii___Text.Ascii___Text" android:versionCode="1" android:versionName="1.0" android:installLocation="auto">
+	<uses-sdk android:minSdkVersion="4" />
+	<application android:label="Ascii___Text" android:icon="@drawable/Icon"></application>
+</manifest>

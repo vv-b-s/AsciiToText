@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="base_prompt">Choose a base:</string>
+  <string-array name="bases_array">
+    <item>Binary</item>
+    <item>Decimal</item>
+    <item>Hexadecimal</item>
+    <item>Octadecimal</item>
+    </string-array>
+</resources>
