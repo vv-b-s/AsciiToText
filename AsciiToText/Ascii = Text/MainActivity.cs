@@ -1,6 +1,7 @@
 ﻿using System;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
@@ -10,7 +11,7 @@ using Translate;
 
 namespace Ascii___Text
 {
-    [Activity(Label = "Ascii to Text", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "Ascii to Text", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : Activity
     {
         private int _base = 0;              //gets the position of the spinner

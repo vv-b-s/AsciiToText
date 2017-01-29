@@ -26,6 +26,8 @@ namespace Ascii___Text
 		
 		public static void UpdateIdValues()
 		{
+			global::Tesseract.Droid.Resource.String.ApplicationName = global::Ascii___Text.Resource.String.ApplicationName;
+			global::Tesseract.Droid.Resource.String.Hello = global::Ascii___Text.Resource.String.Hello;
 		}
 		
 		public partial class Array
@@ -129,8 +131,14 @@ namespace Ascii___Text
 		public partial class String
 		{
 			
+			// aapt resource value: 0x7f040001
+			public const int ApplicationName = 2130968577;
+			
 			// aapt resource value: 0x7f040000
-			public const int base_prompt = 2130968576;
+			public const int Hello = 2130968576;
+			
+			// aapt resource value: 0x7f040002
+			public const int base_prompt = 2130968578;
 			
 			static String()
 			{
