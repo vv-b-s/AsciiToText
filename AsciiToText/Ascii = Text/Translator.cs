@@ -104,7 +104,7 @@ namespace Translate
                 case 1:                                                                     // Decimal Conversion
                     for (int i = 0; i < letters.Length; i++)
                     {
-                        output += (int)letters[i];
+                        output += (long)letters[i];
                         output += ' ';
                     }
                     return output;
@@ -198,11 +198,13 @@ namespace Translate
             string output = "";
             try
             {
-                input = input.Replace(" ", "");
-                byte[] raw = new byte[input.Length / 2];
+                string[] insplit = new string[0];               // used when input has spaces
+                if (input.Contains(" "))
+                    insplit = input.Split();
+                int[] raw = new int[(insplit.Length != 0) ? insplit.Length : input.Length];       // if insplit's length is > 0, raw will take its value. else it will take input's value
                 for (int i = 0; i < raw.Length; i++)
                 {
-                    raw[i] = Convert.ToByte(input.Substring(i * 2, 2), 16);
+                    raw[i] = int.Parse(((insplit.Length != 0) ? insplit[i] : input), System.Globalization.NumberStyles.HexNumber);  // if insplit contains something, insplit will be translated instead.
                     output += (char)raw[i];
                 }
             }
@@ -226,26 +228,33 @@ namespace Translate
                     string[] temp = input.Split();
                     for (int i = 0; i < temp.Length; i++)
                     {
-                        if (temp[i].Length < 3 || temp[i].Length > 3)
+                        if (temp[i].Length > 10)
                             return output;
-                        
                         output += (char)Convert.ToInt32(temp[i], 8);
                     }
                 }
-                catch(ArgumentOutOfRangeException)
+                catch (ArgumentOutOfRangeException)
                 {
                     return output;
-                }  
+                }
             }
             else
             {
-                if (input.Length == 3)
+                try
+                {
+                    if (input.Length > 10)
+                        return output;
                     output = ((char)Convert.ToInt32(input, 8)).ToString();
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    return output;
+                }
             }
 
             return output;
         }
-        static string ToOct(int input) => string.Format(@"{0}{1}{2}", ((input >> 6) & 7), ((input >> 3) & 7), (input & 7));      //http://frugalcoder.us/post/2008/12/03/C-Sharp-Convert-Between-Byte-and-Octal-String.aspx
+        static string ToOct(int input) => Convert.ToString(input, 8);           //http://stackoverflow.com/questions/4123613/formatting-an-integer-as-octal
 
         #endregion
     }
