@@ -25,7 +25,7 @@ namespace Ascii___Text
     public class MainActivity : Activity
     {
         private int _base = 0;              //gets the position of the spinner
-        public static string OCRtext { set; get; }
+        public static string OCRtext { set; get; }                  // Stores the OCR text
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -43,6 +43,8 @@ namespace Ascii___Text
             var photoBT = FindViewById<Button>(Resource.Id.photoBT);
             photoBT.Enabled = true;
 
+            // Code itself
+
             #region OCR                     // http://thatcsharpguy.com/post/tesseract-ocr-xamarin/
             var container = TinyIoCContainer.Current;
 
@@ -56,8 +58,6 @@ namespace Ascii___Text
             Resolver.SetResolver(new TinyResolver(container));
 
             #endregion
-
-            // Code itself
 
             #region Spinner
             //https://developer.xamarin.com/guides/android/user_interface/spinner/
@@ -91,14 +91,14 @@ namespace Ascii___Text
                 }                
             };
 
-            photoBT.Click += (object sender, EventArgs e) =>
+            photoBT.Click += (object sender, EventArgs e) =>                            // Gets the OCR text
              {
                  OCR.CeatePicture();
                  TextBox.Text = "After taking the photo wait for a few seconds and hold the \"Take photo\" button to view the text.";
                  AsciiBox.Text = "";
              };
 
-            photoBT.LongClick += delegate
+            photoBT.LongClick += delegate                       // Sends the OCR text to the focused box
               {
                   if (TextBox.IsFocused)
                       TextBox.Text = OCRtext;
