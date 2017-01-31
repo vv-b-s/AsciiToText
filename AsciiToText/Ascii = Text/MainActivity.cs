@@ -94,7 +94,7 @@ namespace Ascii___Text
             photoBT.Click += (object sender, EventArgs e) =>                            // Gets the OCR text
              {
                  OCR.CeatePicture();
-                 TextBox.Text = "After taking the photo wait for a few seconds and hold the \"Take photo\" button to view the text.";
+                 TextBox.Text = "After taking the photo wait for a few seconds and hold the \"Take a photo\" button to view the text.";
                  AsciiBox.Text = "";
              };
 
