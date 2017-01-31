@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -6,8 +7,17 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
-using Translate;
 
+using Translate;
+using OCR_Feature;
+
+using TinyIoC;
+using Tesseract;
+using Tesseract.Droid;
+using XLabs.Ioc;
+using XLabs.Ioc.TinyIOC;
+using XLabs.Platform.Device;
+using XLabs.Platform.Services.Media;
 
 namespace Ascii___Text
 {
@@ -15,6 +25,8 @@ namespace Ascii___Text
     public class MainActivity : Activity
     {
         private int _base = 0;              //gets the position of the spinner
+        public static string OCRtext { set; get; }
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -28,8 +40,22 @@ namespace Ascii___Text
             var TextBox = FindViewById<EditText>(Resource.Id.TextBox);
             var AsciiBox = FindViewById<EditText>(Resource.Id.AsciiBox);
             var spinner = FindViewById<Spinner>(Resource.Id.spinner);
+            var photoBT = FindViewById<Button>(Resource.Id.photoBT);
+            photoBT.Enabled = true;
 
+            #region OCR                     // http://thatcsharpguy.com/post/tesseract-ocr-xamarin/
+            var container = TinyIoCContainer.Current;
 
+            container.Register<IDevice>(AndroidDevice.CurrentDevice);
+            container.Register<ITesseractApi>((cont, parapeters) =>
+            {
+                return new TesseractApi(ApplicationContext, AssetsDeployment.OncePerInitialization);
+            });
+
+            Resolver.ResetResolver();
+            Resolver.SetResolver(new TinyResolver(container));
+
+            #endregion
 
             // Code itself
 
@@ -42,7 +68,6 @@ namespace Ascii___Text
             spinner.Adapter = adapter;          // Displays the item on the spinner itself
 
             #endregion Spinner
-
 
             TextBox.TextChanged += delegate
             {
@@ -65,6 +90,21 @@ namespace Ascii___Text
                         TextBox.Text = Translator.ConvertTo(Translator.Type.Text, AsciiBox.Text,_base);
                 }                
             };
+
+            photoBT.Click += (object sender, EventArgs e) =>
+             {
+                 OCR.CeatePicture();
+                 TextBox.Text = "After taking the photo wait for a few seconds and hold the \"Take photo\" button to view the text.";
+                 AsciiBox.Text = "";
+             };
+
+            photoBT.LongClick += delegate
+              {
+                  if (TextBox.IsFocused)
+                      TextBox.Text = OCRtext;
+                  else
+                      AsciiBox.Text = OCRtext;
+              };
         }
 
         private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)

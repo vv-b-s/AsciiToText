@@ -28,6 +28,10 @@ namespace Ascii___Text
 		{
 			global::Tesseract.Droid.Resource.String.ApplicationName = global::Ascii___Text.Resource.String.ApplicationName;
 			global::Tesseract.Droid.Resource.String.Hello = global::Ascii___Text.Resource.String.Hello;
+			global::XLabs.IOC.TinyIOC.Droid.Resource.String.ApplicationName = global::Ascii___Text.Resource.String.ApplicationName;
+			global::XLabs.IOC.TinyIOC.Droid.Resource.String.Hello = global::Ascii___Text.Resource.String.Hello;
+			global::XLabs.Platform.Resource.String.ApplicationName = global::Ascii___Text.Resource.String.ApplicationName;
+			global::XLabs.Platform.Resource.String.Hello = global::Ascii___Text.Resource.String.Hello;
 		}
 		
 		public partial class Array
@@ -89,6 +93,9 @@ namespace Ascii___Text
 			
 			// aapt resource value: 0x7f060002
 			public const int TextBox = 2131099650;
+			
+			// aapt resource value: 0x7f060008
+			public const int photoBT = 2131099656;
 			
 			// aapt resource value: 0x7f060004
 			public const int spinner = 2131099652;

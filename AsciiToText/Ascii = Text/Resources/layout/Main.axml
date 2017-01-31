@@ -55,5 +55,11 @@
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tableRow3" />
+        android:id="@+id/tableRow3">
+        <Button
+            android:text="Take a photo"
+            android:id="@+id/photoBT"
+            android:layout_width="161.5dp"
+            android:layout_height="41.5dp" />
+    </TableRow>
 </LinearLayout>
