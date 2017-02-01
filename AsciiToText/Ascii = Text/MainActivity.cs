@@ -7,6 +7,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Android.Hardware;
+
 
 using Translate;
 using OCR_Feature;
@@ -41,21 +43,28 @@ namespace Ascii___Text
             var AsciiBox = FindViewById<EditText>(Resource.Id.AsciiBox);
             var spinner = FindViewById<Spinner>(Resource.Id.spinner);
             var photoBT = FindViewById<Button>(Resource.Id.photoBT);
-            photoBT.Enabled = true;
 
             // Code itself
 
-            #region OCR                     // http://thatcsharpguy.com/post/tesseract-ocr-xamarin/
-            var container = TinyIoCContainer.Current;
+            #region OCR                                       // http://thatcsharpguy.com/post/tesseract-ocr-xamarin/
 
-            container.Register<IDevice>(AndroidDevice.CurrentDevice);
-            container.Register<ITesseractApi>((cont, parapeters) =>
+            int numCameras = Camera.NumberOfCameras;        // used to turn off the "Take a photo" feature if there's no camera available | https://stackoverflow.com/questions/1944117/check-if-device-has-a-camera
+
+            if (numCameras > 0)
             {
-                return new TesseractApi(ApplicationContext, AssetsDeployment.OncePerInitialization);
-            });
+                var container = TinyIoCContainer.Current;
 
-            Resolver.ResetResolver();
-            Resolver.SetResolver(new TinyResolver(container));
+                container.Register<IDevice>(AndroidDevice.CurrentDevice);
+                container.Register<ITesseractApi>((cont, parapeters) =>
+                {
+                    return new TesseractApi(ApplicationContext, AssetsDeployment.OncePerInitialization);
+                });
+
+                Resolver.ResetResolver();
+                Resolver.SetResolver(new TinyResolver(container));
+            }
+            else photoBT.Enabled = false;
+
 
             #endregion
 
