@@ -210,7 +210,7 @@ namespace Translate
             }
             catch (FormatException)
             {
-                return "Wrong format!";
+                return output;
             }
 
             return output;
