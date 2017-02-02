@@ -1,21 +1,21 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text;*/
 using System.Threading.Tasks;
 
-using Android.App;
+/*using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
-using Android.Widget;
+using Android.Widget;*/
 
-using TinyIoC;
+//using TinyIoC;
 using Tesseract;
-using Tesseract.Droid;
+//using Tesseract.Droid;
 using XLabs.Ioc;
-using XLabs.Ioc.TinyIOC;
+//using XLabs.Ioc.TinyIOC;
 using XLabs.Platform.Device;
 using XLabs.Platform.Services.Media;
 

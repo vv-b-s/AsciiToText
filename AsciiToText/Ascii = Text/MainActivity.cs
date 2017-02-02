@@ -1,10 +1,10 @@
 ﻿using System;
 
 using Android.App;
-using Android.Content;
+//using Android.Content;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
+//using Android.Runtime;
+//using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Android.Hardware;
@@ -19,7 +19,7 @@ using Tesseract.Droid;
 using XLabs.Ioc;
 using XLabs.Ioc.TinyIOC;
 using XLabs.Platform.Device;
-using XLabs.Platform.Services.Media;
+//using XLabs.Platform.Services.Media;
 
 namespace Ascii___Text
 {
