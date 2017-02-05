@@ -82,32 +82,23 @@ namespace Ascii___Text
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060007
-			public const int AsciiBox = 2131099655;
-			
-			// aapt resource value: 0x7f060006
-			public const int LabelAscii = 2131099654;
-			
-			// aapt resource value: 0x7f060001
-			public const int LabelText = 2131099649;
-			
-			// aapt resource value: 0x7f060002
-			public const int TextBox = 2131099650;
-			
-			// aapt resource value: 0x7f060008
-			public const int photoBT = 2131099656;
-			
 			// aapt resource value: 0x7f060004
-			public const int spinner = 2131099652;
-			
-			// aapt resource value: 0x7f060000
-			public const int tableRow1 = 2131099648;
-			
-			// aapt resource value: 0x7f060005
-			public const int tableRow3 = 2131099653;
+			public const int AsciiBox = 2131099652;
 			
 			// aapt resource value: 0x7f060003
-			public const int tableRow4 = 2131099651;
+			public const int LabelAscii = 2131099651;
+			
+			// aapt resource value: 0x7f060000
+			public const int LabelText = 2131099648;
+			
+			// aapt resource value: 0x7f060001
+			public const int TextBox = 2131099649;
+			
+			// aapt resource value: 0x7f060005
+			public const int photoBT = 2131099653;
+			
+			// aapt resource value: 0x7f060002
+			public const int spinner = 2131099650;
 			
 			static Id()
 			{
