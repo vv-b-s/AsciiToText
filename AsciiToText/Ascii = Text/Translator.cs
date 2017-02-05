@@ -72,22 +72,19 @@ namespace Translate
                 return stBuild.ToString();
         }
 
-        static string AsciiToText(string input, int _base)      //Other bases 
+        static string AsciiToText(string input, int _base)   //Other bases 
         {
-            string output = "";
             switch (_base)
             {
-                case 1: // Base 10
-                    output = IntToText(input);
-                    break;
-                case 2:                 // Base 16
-                    output = HexToText(input);
-                    break;
-                case 3:
-                    output = OctToString(input);        // base 8
-                    break;
+                case 1:                                   // Base 10
+                    return IntToText(input);
+                case 2:                                 // Base 16
+                    return HexToText(input);
+                case 3:                               // Base 8
+                    return OctToString(input);        
+                default:
+                    return "";
             }
-            return output;
         }
 
         static string TextToAscii(string input, int _base)
@@ -184,19 +181,9 @@ namespace Translate
             }
             else
             {
-                try
-                {
-                    long integer = long.Parse(input);
-                    return ((char)integer).ToString();
-                }
-                catch (OverflowException)
-                {
-                    return "I bleed. :(";
-                }
-                catch (FormatException)
-                {
-                    return "This has no translation!";
-                }
+                long integer;
+                long.TryParse(input,out integer);
+                return ((char)integer).ToString();                
             }
         }
 

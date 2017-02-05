@@ -85,6 +85,9 @@ namespace Ascii___Text
                     LabelText.Text = (TextBox.Text == "") ? "Enter your text here:" : "Your text is:";
                     LabelAscii.Text = (TextBox.Text == "") ? "Or enter your Ascii code here:" : "Your text in Ascii is:";
                     AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text,_base);
+
+                    if (TextBox.Text == "")
+                        AsciiBox.Text = "";
                 }
             };
 
@@ -97,6 +100,9 @@ namespace Ascii___Text
                     
                     if (Translatable())
                         TextBox.Text = Translator.ConvertTo(Translator.Type.Text, AsciiBox.Text,_base);
+
+                    if(AsciiBox.Text == "")
+                        TextBox.Text = "";
                 }                
             };
 
