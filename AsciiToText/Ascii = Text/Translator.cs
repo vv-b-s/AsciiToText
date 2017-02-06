@@ -34,17 +34,12 @@ namespace Translate
 
         static string AsciiToText(string input)  // base 2
         {
-            int inputLengthCount = 0;
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (input[i] == '0' || input[i] == '1')
-                    inputLengthCount++;
-            }
+            input = input.Replace(" ", "");   
             
-            if (inputLengthCount % 8 == 0)                                           //Checks if the input can be translated
+            if (input.Length % 8 == 0)                                           //Checks if the input can be translated
             {
                 stBuild = new StringBuilder();
-                string[] inputs = new string[inputLengthCount / 8];               // splits the string to bits
+                string[] inputs = new string[input.Length / 8];               // splits the string to bits
                 int j = 0;                                                       // counts the index of inputs[]
 
                 for (int i = 0; i < input.Length; i++)
@@ -143,24 +138,10 @@ namespace Translate
         static int BinToInt(string input)             // takes a string of bits and converts it into integer
         {
             int output = 0;
-            for (int i = 0; i < input.Length; i++)
+            for (int i = input.Length-1, j=0; i >=0; i--,j++)
             {
-                if (i == 0)
-                    output += (input[i] == '1') ? 128 : 0;
-                if (i == 1)
-                    output += (input[i] == '1') ? 64 : 0;
-                if (i == 2)
-                    output += (input[i] == '1') ? 32 : 0;
-                if (i == 3)
-                    output += (input[i] == '1') ? 16 : 0;
-                if (i == 4)
-                    output += (input[i] == '1') ? 8 : 0;
-                if (i == 5)
-                    output += (input[i] == '1') ? 4 : 0;
-                if (i == 6)
-                    output += (input[i] == '1') ? 2 : 0;
-                if (i == 7)
-                    output += (input[i] == '1') ? 1 : 0;
+                if (input[j] == '1')
+                    output += (int)Math.Pow(2, i);
             }
             return output;
         }
