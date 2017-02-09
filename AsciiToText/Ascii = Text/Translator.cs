@@ -15,7 +15,7 @@ namespace Translate
 {
     public static class Translator
     {
-        static StringBuilder stBuild;
+        public static StringBuilder stBuild;
 
         public enum Type { None, Ascii, Text };
         public static string ConvertTo(Type type, string text, int _base)
@@ -34,12 +34,13 @@ namespace Translate
 
         static string AsciiToText(string input)  // base 2
         {
+            string output = Ascii___Text.MainActivity.Text;
             input = input.Replace(" ", "");   
             
             if (input.Length % 8 == 0)                                           //Checks if the input can be translated
             {
                 stBuild = new StringBuilder();
-                string[] inputs = new string[input.Length / 8];               // splits the string to bits
+                string[] inputs = new string[input.Length / 8];                   // splits the string to bits
                 int j = 0;                                                       // counts the index of inputs[]
 
                 for (int i = 0; i < input.Length; i++)
@@ -60,11 +61,12 @@ namespace Translate
                 stBuild = new StringBuilder();
                 for (int i = 0; i < inputs.Length; i++)             // Transforming inputs into char
                     stBuild.Append((char)BinToInt(inputs[i]));
+                output = stBuild.ToString();
 
-                return stBuild.ToString();
+                return output;
             }
             else
-                return stBuild.ToString();
+                return output;
         }
 
         static string AsciiToText(string input, int _base)   //Other bases 
@@ -89,6 +91,7 @@ namespace Translate
                 letters[i] = input[i];
 
             stBuild = new StringBuilder();
+            string output;
 
             switch (_base)
             {
@@ -98,7 +101,10 @@ namespace Translate
                         stBuild.Append(ToBin(letters[i], 8));
                         stBuild.Append(" ");      // Adds intervals if spacing is not enabled
                     }
-                    return stBuild.ToString();
+                    output = stBuild.ToString();
+                    stBuild = new StringBuilder();
+
+                    return output;
 
                 case 1:                                                                     // Decimal Conversion
                     for (int i = 0; i < letters.Length; i++)
@@ -106,7 +112,10 @@ namespace Translate
                         stBuild.Append((long)letters[i]);
                         stBuild.Append(' ');
                     }
-                    return stBuild.ToString();
+                    output = stBuild.ToString();
+                    stBuild = new StringBuilder();
+
+                    return output;
 
 
                 case 2:                                                             // Hexadecimal conversion
@@ -115,7 +124,10 @@ namespace Translate
                         stBuild.Append(ToHex(letters[i]));
                         stBuild.Append(' ');
                     }
-                    return stBuild.ToString();
+                    output = stBuild.ToString();
+                    stBuild = new StringBuilder();
+
+                    return output;
 
                 case 3:                                                     //Octadecimal
                     for (int i = 0; i < letters.Length; i++)
@@ -123,7 +135,10 @@ namespace Translate
                         stBuild.Append(ToOct(letters[i]));
                         stBuild.Append(' ');
                     }
-                    return stBuild.ToString();
+                    output = stBuild.ToString();
+                    stBuild = new StringBuilder();
+
+                    return output;
                 default:
                     return "";
             }

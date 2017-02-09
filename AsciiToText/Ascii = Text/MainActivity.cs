@@ -28,6 +28,7 @@ namespace Ascii___Text
     {
         private int _base = 0;              //gets the position of the spinner
         public static string OCRtext { set; get; }                  // Stores the OCR text
+        public static string Text { set; get; }                   // Takes the text of the changed textbox
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -85,6 +86,7 @@ namespace Ascii___Text
                     LabelText.Text = (TextBox.Text == "") ? "Enter your text here:" : "Your text is:";
                     LabelAscii.Text = (TextBox.Text == "") ? "Or enter your Ascii code here:" : "Your text in Ascii is:";
                     AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text,_base);
+                    Text = TextBox.Text;
 
                     if (TextBox.Text == "")
                         AsciiBox.Text = "";
