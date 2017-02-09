@@ -179,7 +179,7 @@ namespace Translate
             {
                 long integer;
                 long.TryParse(input,out integer);
-                return ((char)integer).ToString();                
+                return (integer!=0)?((char)integer).ToString():Ascii___Text.MainActivity.Text;                
             }
         }
 
@@ -201,11 +201,11 @@ namespace Translate
             }
             catch (FormatException)
             {
-                return stBuild.ToString();
+                return (stBuild.Length>0)?stBuild.ToString(): Ascii___Text.MainActivity.Text;
             }
             catch(OverflowException)
             {
-                return stBuild.ToString();
+                return (stBuild.Length > 0) ? stBuild.ToString() : Ascii___Text.MainActivity.Text;
             }
         }
         static string ToHex(int input) => Convert.ToInt64(input).ToString("x2");           // http://stackoverflow.com/questions/12527694/c-sharp-convert-char-to-byte-hex-representation
@@ -229,7 +229,7 @@ namespace Translate
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    return stBuild.ToString();
+                    return (stBuild.Length > 0) ? stBuild.ToString() : Ascii___Text.MainActivity.Text;
                 }
             }
             else

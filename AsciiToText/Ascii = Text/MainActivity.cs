@@ -103,6 +103,8 @@ namespace Ascii___Text
                     if (Translatable())
                         TextBox.Text = Translator.ConvertTo(Translator.Type.Text, AsciiBox.Text,_base);
 
+                    Text = TextBox.Text;
+
                     if(AsciiBox.Text == "")
                         TextBox.Text = "";
                 }                
