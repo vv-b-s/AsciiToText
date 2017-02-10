@@ -15,7 +15,7 @@ namespace Translate
 {
     public static class Translator
     {
-        public static StringBuilder stBuild;
+        static StringBuilder stBuild;
 
         public enum Type { None, Ascii, Text };
         public static string ConvertTo(Type type, string text, int _base)
