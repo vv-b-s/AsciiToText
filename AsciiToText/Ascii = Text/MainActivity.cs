@@ -1,10 +1,10 @@
 ﻿using System;
 
 using Android.App;
-//using Android.Content;
+using Android.Content;
 using Android.Content.PM;
-//using Android.Runtime;
-//using Android.Views;
+using Android.Runtime;
+using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Android.Hardware;
@@ -33,10 +33,9 @@ namespace Ascii___Text
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
-
+        
             // Objects
             var LabelText = FindViewById<TextView>(Resource.Id.LabelText);
             var LabelAscii = FindViewById<TextView>(Resource.Id.LabelAscii);
@@ -55,7 +54,7 @@ namespace Ascii___Text
             {
                 var container = TinyIoCContainer.Current;
 
-                container.Register<IDevice>(AndroidDevice.CurrentDevice);
+                container.Register(AndroidDevice.CurrentDevice);
                 container.Register<ITesseractApi>((cont, parapeters) =>
                 {
                     return new TesseractApi(ApplicationContext, AssetsDeployment.OncePerInitialization);
@@ -64,7 +63,7 @@ namespace Ascii___Text
                 Resolver.ResetResolver();
                 Resolver.SetResolver(new TinyResolver(container));
             }
-            else photoBT.Enabled = false;
+            else photoBT.Visibility = ViewStates.Invisible;
 
 
             #endregion
