@@ -19,6 +19,7 @@ namespace Translate
 
         public enum Type { None, Ascii, Text };
         public enum Base { Binary, Decimal, Hexadecimal, Octadecimal};
+        
 
         public static string ConvertTo(Type type, string text, Base _base)
         {

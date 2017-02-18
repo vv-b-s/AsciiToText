@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using Android.App;
 using Android.Content;
@@ -72,7 +73,9 @@ namespace Ascii___Text
             //https://developer.xamarin.com/guides/android/user_interface/spinner/
 
             spinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(spinner_ItemSelected);                 // Creates the event for spinner
-            var adapter = ArrayAdapter.CreateFromResource(this, Resource.Array.bases_array, Android.Resource.Layout.SimpleSpinnerItem);     // Makes items in spinner accessable
+            var enumValues = Enum.GetValues(typeof(Translator.Base));                                                         // https://stackoverflow.com/questions/37354738/spinner-with-enum-values-in-xamarin?rq=1
+            var arrayForAdapter = enumValues.Cast<Translator.Base>().Select(e => e.ToString()).ToArray();
+            var adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem, arrayForAdapter);
             adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerItem);
             spinner.Adapter = adapter;          // Displays the item on the spinner itself
 

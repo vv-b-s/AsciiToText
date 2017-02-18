@@ -1921,22 +1921,6 @@ namespace Ascii___Text
 			}
 		}
 		
-		public partial class Array
-		{
-			
-			// aapt resource value: 0x7f0d0000
-			public const int bases_array = 2131558400;
-			
-			static Array()
-			{
-				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
-			}
-			
-			private Array()
-			{
-			}
-		}
-		
 		public partial class Attribute
 		{
 			
