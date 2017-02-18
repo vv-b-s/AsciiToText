@@ -15,10 +15,12 @@ namespace Translate
 {
     public static class Translator
     {
-        static StringBuilder stBuild;
+        static StringBuilder stBuild = new StringBuilder();
 
         public enum Type { None, Ascii, Text };
-        public static string ConvertTo(Type type, string text, int _base)
+        public enum Base { Binary, Decimal, Hexadecimal, Octadecimal};
+
+        public static string ConvertTo(Type type, string text, Base _base)
         {
             switch (type)
             {
@@ -26,21 +28,21 @@ namespace Translate
                     return TextToAscii(text, _base);
 
                 case Type.Text:
-                    return (_base == 0) ? AsciiToText(text) : AsciiToText(text, _base);
+                    return (_base == Base.Binary) ? AsciiToText(text) : AsciiToText(text, _base);
 
             }
             return null;
         }
 
-        static string AsciiToText(string input)  // base 2
+        static string AsciiToText(string input)  // base 2 does not support unicode so it has to work separately
         {
             string output = Ascii___Text.MainActivity.Text;
             input = input.Replace(" ", "");   
             
-            if (input.Length % 8 == 0)                                           //Checks if the input can be translated
+            if (input.Length % 8 == 0)                                           // Each character must contain 8 bits or the code won't be translatable
             {
-                stBuild = new StringBuilder();
-                string[] inputs = new string[input.Length / 8];                   // splits the string to bits
+                stBuild.Clear();
+                string[] inputs = new string[input.Length / 8];
                 int j = 0;                                                       // counts the index of inputs[]
 
                 for (int i = 0; i < input.Length; i++)
@@ -53,12 +55,12 @@ namespace Translate
                     if (stBuild.Length == 8)
                     {
                         inputs[j] = stBuild.ToString();
-                        stBuild = new StringBuilder();
+                        stBuild.Clear();
                         j++;
                     }
                 }
 
-                stBuild = new StringBuilder();
+                stBuild.Clear();
                 for (int i = 0; i < inputs.Length; i++)             // Transforming inputs into char
                     stBuild.Append((char)BinToInt(inputs[i]));
                 output = stBuild.ToString();
@@ -69,74 +71,70 @@ namespace Translate
                 return output;
         }
 
-        static string AsciiToText(string input, int _base)   //Other bases 
+        static string AsciiToText(string input, Base _base)   // Other bases, supporting Unicode
         {
             switch (_base)
             {
-                case 1:                                   // Base 10
+                case Base.Decimal:                                   
                     return IntToText(input);
-                case 2:                                 // Base 16
+                case Base.Hexadecimal:                               
                     return HexToText(input);
-                case 3:                               // Base 8
+                case Base.Octadecimal:                               
                     return OctToString(input);        
                 default:
                     return "";
             }
         }
 
-        static string TextToAscii(string input, int _base)
+        static string TextToAscii(string input, Base _base)
         {
-            char[] letters = new char[input.Length];                             // Splits all the letters
-            for (int i = 0; i < input.Length; i++)
-                letters[i] = input[i];
-
-            stBuild = new StringBuilder();
+            stBuild.Clear();
             string output;
 
             switch (_base)
             {
-                case 0:                                                                              //Binary conversion
-                    for (int i = 0; i < letters.Length; i++)
+                case Base.Binary:                                                                        
+                    for (int i = 0; i < input.Length; i++)
                     {
-                        stBuild.Append(ToBin(letters[i], 8));
-                        stBuild.Append(" ");      // Adds intervals if spacing is not enabled
+                        stBuild.Append(ToBin(input[i], 8));
+                        stBuild.Append(" ");     
                     }
                     output = stBuild.ToString();
-                    stBuild = new StringBuilder();
+                    stBuild.Clear();
 
                     return output;
 
-                case 1:                                                                     // Decimal Conversion
-                    for (int i = 0; i < letters.Length; i++)
+                case Base.Decimal:                                                                   
+                    for (int i = 0; i < input.Length; i++)
                     {
-                        stBuild.Append((long)letters[i]);
+                        stBuild.Append((long)input[i]);
                         stBuild.Append(' ');
                     }
                     output = stBuild.ToString();
-                    stBuild = new StringBuilder();
+                    stBuild.Clear();
 
                     return output;
 
 
-                case 2:                                                             // Hexadecimal conversion
-                    for (int i = 0; i < letters.Length; i++)
+                case Base.Hexadecimal:                                                            
+                    for (int i = 0; i < input.Length; i++)
                     {
-                        stBuild.Append(ToHex(letters[i]));
+                        stBuild.Append(ToHex(input[i]));
                         stBuild.Append(' ');
                     }
                     output = stBuild.ToString();
-                    stBuild = new StringBuilder();
+                    stBuild.Clear();
 
                     return output;
 
-                case 3:                                                     //Octadecimal
-                    for (int i = 0; i < letters.Length; i++)
+                case Base.Octadecimal:                                    
+                    for (int i = 0; i < input.Length; i++)
                     {
-                        stBuild.Append(ToOct(letters[i]));
+                        stBuild.Append(ToOct(input[i]));
                         stBuild.Append(' ');
                     }
                     output = stBuild.ToString();
-                    stBuild = new StringBuilder();
+                    stBuild.Clear();
 
                     return output;
                 default:
@@ -163,7 +161,7 @@ namespace Translate
 
         static string IntToText(string input)
         {
-            stBuild = new StringBuilder();
+            stBuild.Clear();
             if (input.Contains(" "))
             {
                 string[] numbers = input.Split();
@@ -185,7 +183,7 @@ namespace Translate
 
         static string HexToText(string input)                                               // http://stackoverflow.com/questions/724862/converting-from-hex-to-string
         {
-            stBuild = new StringBuilder();
+            stBuild.Clear();
             try
             {
                 string[] insplit = new string[0];               // used when input has spaces
@@ -212,7 +210,7 @@ namespace Translate
 
         static string OctToString(string input)
         {
-            stBuild = new StringBuilder();
+            stBuild.Clear();
 
             if (input.Contains(" "))
             {

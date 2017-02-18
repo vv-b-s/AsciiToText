@@ -26,7 +26,7 @@ namespace Ascii___Text
     [Activity(Label = "Ascii to Text", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : Activity
     {
-        private int _base = 0;              //gets the position of the spinner
+        private int _base = 0;                                        //gets the position of the spinner
         public static string OCRtext { set; get; }                  // Stores the OCR text
         public static string Text { set; get; }                   // Takes the text of the changed textbox
 
@@ -35,7 +35,7 @@ namespace Ascii___Text
             base.OnCreate(bundle);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
-        
+
             // Objects
             var LabelText = FindViewById<TextView>(Resource.Id.LabelText);
             var LabelAscii = FindViewById<TextView>(Resource.Id.LabelAscii);
@@ -84,7 +84,7 @@ namespace Ascii___Text
                 {
                     LabelText.Text = (TextBox.Text == "") ? "Enter your text here:" : "Your text is:";
                     LabelAscii.Text = (TextBox.Text == "") ? "Or enter your Ascii code here:" : "Your text in Ascii is:";
-                    AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text,_base);
+                    AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, (Translator.Base)_base);
                     Text = TextBox.Text;
 
                     if (TextBox.Text == "")
@@ -94,19 +94,19 @@ namespace Ascii___Text
 
             AsciiBox.TextChanged += delegate
             {
-                if(AsciiBox.IsFocused)
+                if (AsciiBox.IsFocused)
                 {
                     LabelText.Text = (AsciiBox.Text == "") ? "Enter your text here:" : "Your text is:";
                     LabelAscii.Text = (AsciiBox.Text == "") ? "Or enter your Ascii code here:" : "Your text in Ascii is:";
-                    
+
                     if (Translatable())
-                        TextBox.Text = Translator.ConvertTo(Translator.Type.Text, AsciiBox.Text,_base);
+                        TextBox.Text = Translator.ConvertTo(Translator.Type.Text, AsciiBox.Text, (Translator.Base)_base);
 
                     Text = TextBox.Text;
 
-                    if(AsciiBox.Text == "")
+                    if (AsciiBox.Text == "")
                         TextBox.Text = "";
-                }                
+                }
             };
 
             photoBT.Click += (object sender, EventArgs e) =>                            // Gets the OCR text
@@ -129,19 +129,23 @@ namespace Ascii___Text
         {
             Spinner spinner = (Spinner)sender;
             _base = e.Position;
+
             // Connecting Fields
             var TextBox = FindViewById<EditText>(Resource.Id.TextBox);
             var AsciiBox = FindViewById<EditText>(Resource.Id.AsciiBox);
 
             //Conversion Code
-            if (e.Position == 0)                                                                    // Base 2
-                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, 0);
-            if(e.Position==1)                                                                       // Base 10
-                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, 1);
-            if (e.Position == 2)                                                                    // base 16
-                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, 2);
-            if (e.Position == 3)                                                                    // Base 8
-                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, 3);
+            if (e.Position == (int)Translator.Base.Binary)                                                                    
+                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Binary);
+
+            if (e.Position == (int)Translator.Base.Decimal)                                                                       
+                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Decimal);
+
+            if (e.Position == (int)Translator.Base.Hexadecimal)                                                                       
+                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Hexadecimal);
+
+            if (e.Position == (int)Translator.Base.Octadecimal)                                                                    
+                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Octadecimal);
 
         }
 
@@ -150,9 +154,9 @@ namespace Ascii___Text
             var AsciiBox = FindViewById<EditText>(Resource.Id.AsciiBox);
 
             bool translatable = true;
-            switch(_base)
+            switch ((Translator.Base)_base)
             {
-                case 0: // Base 2
+                case Translator.Base.Binary: // Base 2
                     for (int i = 0; i < AsciiBox.Text.Length; i++)
                     {
                         if (AsciiBox.Text[i] == '0' || AsciiBox.Text[i] == '1' || AsciiBox.Text[i] == ' ')
@@ -162,7 +166,7 @@ namespace Ascii___Text
                     }
                     break;
 
-                case 1:                                                     //base 10
+                case Translator.Base.Decimal:                                                     
                     for (int i = 0; i < AsciiBox.Text.Length; i++)
                     {
                         if ((AsciiBox.Text[i] >= '0' && AsciiBox.Text[i] <= '9') || AsciiBox.Text[i] == ' ')
@@ -174,9 +178,9 @@ namespace Ascii___Text
                         return false;
                     break;
 
-                case 2:                                         // base 16
+                case Translator.Base.Hexadecimal:                                         
                     string text = AsciiBox.Text;
-                    for(int i = 0;i<text.Length;i++)
+                    for (int i = 0; i < text.Length; i++)
                     {
                         if ((text[i] >= 'A' && text[i] <= 'Z') || (text[i] >= 'a' && text[i] <= 'z') || (text[i] >= '0' && text[i] <= '9') || text[i] == ' ')
                             continue;
@@ -185,7 +189,7 @@ namespace Ascii___Text
                     }
                     break;
 
-                case 3:                                     // base 8        
+                case Translator.Base.Octadecimal:                                         
                     for (int i = 0; i < AsciiBox.Text.Length; i++)
                     {
                         if ((AsciiBox.Text[i] >= '0' && AsciiBox.Text[i] <= '7') || AsciiBox.Text[i] == ' ')
