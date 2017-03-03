@@ -18,7 +18,7 @@ namespace Translate
         static StringBuilder stBuild = new StringBuilder();
 
         public enum Type { None, Ascii, Text };
-        public enum Base { Binary, Decimal, Hexadecimal, Octadecimal};
+        public enum Base { Binary, Octadecimal, Decimal, Hexadecimal};
         
 
         public static string ConvertTo(Type type, string text, Base _base)
