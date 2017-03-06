@@ -99,6 +99,8 @@ namespace AsciiToTextUWP
        
         private void spinner_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            _base = spinner.SelectedIndex;
+
             if (spinner.SelectedIndex == (int)Translator.Base.Binary)
                 AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Binary);
 

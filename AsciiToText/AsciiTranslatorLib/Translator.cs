@@ -15,7 +15,12 @@ namespace Translate
 {
     public static class Translator
     {
-        public static string InputText { set; get; }                       // Stores the Input text, to display it in case of exception for example
+        private static string _InputText = "";                       // Stores the Input text, to display it in case of exception for example
+        public static string InputText
+        {
+            set { _InputText = value; }
+            get { return _InputText; }
+        }
 
         static StringBuilder stBuild = new StringBuilder();
 
