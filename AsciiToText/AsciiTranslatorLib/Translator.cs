@@ -15,6 +15,8 @@ namespace Translate
 {
     public static class Translator
     {
+        public static string InputText { set; get; }                       // Stores the Input text, to display it in case of exception for example
+
         static StringBuilder stBuild = new StringBuilder();
 
         public enum Type { None, Ascii, Text };
@@ -37,7 +39,7 @@ namespace Translate
 
         static string AsciiToText(string input)  // base 2 does not support unicode so it has to work separately
         {
-            string output = Ascii___Text.MainActivity.Text;
+            string output = InputText;
             input = input.Replace(" ", "");   
             
             if (input.Length % 8 == 0)                                           // Each character must contain 8 bits or the code won't be translatable
@@ -178,7 +180,7 @@ namespace Translate
             {
                 long integer;
                 long.TryParse(input,out integer);
-                return (integer!=0)?((char)integer).ToString():Ascii___Text.MainActivity.Text;                
+                return (integer!=0)?((char)integer).ToString():InputText;                
             }
         }
 
@@ -200,11 +202,11 @@ namespace Translate
             }
             catch (FormatException)
             {
-                return (stBuild.Length>0)?stBuild.ToString(): Ascii___Text.MainActivity.Text;
+                return (stBuild.Length>0)?stBuild.ToString(): InputText;
             }
             catch(OverflowException)
             {
-                return (stBuild.Length > 0) ? stBuild.ToString() : Ascii___Text.MainActivity.Text;
+                return (stBuild.Length > 0) ? stBuild.ToString() : InputText;
             }
         }
         static string ToHex(int input) => Convert.ToInt64(input).ToString("x2");           // http://stackoverflow.com/questions/12527694/c-sharp-convert-char-to-byte-hex-representation
@@ -228,7 +230,7 @@ namespace Translate
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    return (stBuild.Length > 0) ? stBuild.ToString() : Ascii___Text.MainActivity.Text;
+                    return (stBuild.Length > 0) ? stBuild.ToString() : InputText;
                 }
             }
             else
