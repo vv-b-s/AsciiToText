@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AsciiToTextUWP")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("ASCII to Text")]
+[assembly: AssemblyDescription("Converts text to ASCII or Unicode and backwards")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AsciiToTextUWP")]
