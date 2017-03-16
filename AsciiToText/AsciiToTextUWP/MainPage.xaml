@@ -9,11 +9,11 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
         <TextBlock x:Name="LabelText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter your text here:" VerticalAlignment="Top" Width="360"/>
-        <TextBox x:Name="TextBox" HorizontalAlignment="Left" Margin="0,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="166" Width="360" ScrollViewer.HorizontalScrollBarVisibility="Auto" TextChanged="TextBox_TextChanged" GotFocus="TextBox_GotFocus"/>
+        <TextBox x:Name="TextBox" Margin="0,25,0,0" TextWrapping="Wrap" Text="" Height="166" ScrollViewer.HorizontalScrollBarVisibility="Auto" TextChanged="TextBox_TextChanged" GotFocus="TextBox_GotFocus" VerticalAlignment="Top"/>
         <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="0,210,0,0" TextWrapping="Wrap" Text="Choose a base:" VerticalAlignment="Top" Width="350"/>
         <ComboBox x:Name="spinner" HorizontalAlignment="Left" Margin="0,235,0,0" VerticalAlignment="Top" Width="189" SelectionChanged="spinner_SelectionChanged"/>
         <TextBlock x:Name="LabelAscii" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter your Ascii code here:" VerticalAlignment="Top" Width="360" Margin="0,289,0,0"/>
-        <TextBox x:Name="AsciiBox" HorizontalAlignment="Left" Margin="0,314,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="166" Width="360" ScrollViewer.HorizontalScrollBarVisibility="Auto" GotFocus="AsciiBox_GotFocus" TextChanged="AsciiBox_TextChanged"/>
+        <TextBox x:Name="AsciiBox" Margin="0,314,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="166" ScrollViewer.HorizontalScrollBarVisibility="Auto" GotFocus="AsciiBox_GotFocus" TextChanged="AsciiBox_TextChanged"/>
         <Button x:Name="photoBT" Content="Take a photo" HorizontalAlignment="Left" Margin="10,526,0,0" VerticalAlignment="Top" Height="42" Width="189"/>
     </Grid>
 </Page>
