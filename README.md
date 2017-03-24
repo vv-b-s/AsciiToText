@@ -1,5 +1,6 @@
 # AsciiToText
 Multiplatform application
+
 Windows store link: https://www.microsoft.com/store/apps/9pn63cmswmbl
 Notice: UWP app does not support OCR (plans for future support)
 
