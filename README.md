@@ -1,5 +1,7 @@
 # AsciiToText
-Android application
+Multiplatform application
+Windows store link: https://www.microsoft.com/store/apps/9pn63cmswmbl
+Notice: UWP app does not support OCR (plans for future support)
 
 This application gets plain text and converts it to Ascii in base 2,8,10 and 16.
 The same can be done backwards by typing Ascii code in the selected base. The app simply converts integers to chars and sticks them together.
