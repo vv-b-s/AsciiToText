@@ -1,15 +1,8 @@
 using System;
 using System.Text;
-/*using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;*/
+using System.Text.RegularExpressions;
 
 namespace Translate
 {
@@ -45,32 +38,27 @@ namespace Translate
         static string AsciiToText(string input)  // base 2 does not support unicode so it has to work separately
         {
             string output = InputText;
-            input = input.Replace(" ", "");   
-            
+            input = Regex.Replace(input, @"\s+","");
+
             if (input.Length % 8 == 0)                                           // Each character must contain 8 bits or the code won't be translatable
             {
                 stBuild.Clear();
-                string[] inputs = new string[input.Length / 8];
-                int j = 0;                                                       // counts the index of inputs[]
+                var inputs = new List<string>();
 
-                for (int i = 0; i < input.Length; i++)
+                foreach(var character in input)
                 {
-                    if (input[i] == ' ')
-                        continue;
-
-                    stBuild.Append(input[i]);
+                    stBuild.Append(character);
 
                     if (stBuild.Length == 8)
                     {
-                        inputs[j] = stBuild.ToString();
+                        inputs.Add(stBuild.ToString());
                         stBuild.Clear();
-                        j++;
                     }
                 }
 
                 stBuild.Clear();
-                for (int i = 0; i < inputs.Length; i++)             // Transforming inputs into char
-                    stBuild.Append((char)BinToInt(inputs[i]));
+                foreach(var number in inputs)            // Transforming inputs into char
+                    stBuild.Append((char)ConvertToBase10(number, 2));
                 output = stBuild.ToString();
 
                 return output;
@@ -88,7 +76,7 @@ namespace Translate
                 case Base.Hexadecimal:                               
                     return HexToText(input);
                 case Base.Octadecimal:                               
-                    return OctToString(input);        
+                    return OctToText(input);        
                 default:
                     return "";
             }
@@ -96,55 +84,17 @@ namespace Translate
 
         static string TextToAscii(string input, Base _base)
         {
-            stBuild.Clear();
-            string output;
-
             switch (_base)
             {
-                case Base.Binary:                                                                        
-                    for (int i = 0; i < input.Length; i++)
-                    {
-                        stBuild.Append(ToBin(input[i], 8));
-                        stBuild.Append(" ");     
-                    }
-                    output = stBuild.ToString();
-                    stBuild.Clear();
+                case Base.Binary:
+                    return string.Join(" ", input.ToCharArray().Select(i => ToBin(i,8)).ToList());
+                case Base.Decimal:
+                    return string.Join(" ", input.ToCharArray().Select(i => (int)i).ToList());
+                case Base.Octadecimal:
+                    return string.Join(" ", input.ToCharArray().Select(i => ConvertToBaseN(i, 8)).ToList());
+                case Base.Hexadecimal:
+                    return string.Join(" ", input.ToCharArray().Select(i => ConvertToBaseN(i, 16)).ToList());
 
-                    return output;
-
-                case Base.Decimal:                                                                   
-                    for (int i = 0; i < input.Length; i++)
-                    {
-                        stBuild.Append((long)input[i]);
-                        stBuild.Append(' ');
-                    }
-                    output = stBuild.ToString();
-                    stBuild.Clear();
-
-                    return output;
-
-
-                case Base.Hexadecimal:                                                            
-                    for (int i = 0; i < input.Length; i++)
-                    {
-                        stBuild.Append(ToHex(input[i]));
-                        stBuild.Append(' ');
-                    }
-                    output = stBuild.ToString();
-                    stBuild.Clear();
-
-                    return output;
-
-                case Base.Octadecimal:                                    
-                    for (int i = 0; i < input.Length; i++)
-                    {
-                        stBuild.Append(ToOct(input[i]));
-                        stBuild.Append(' ');
-                    }
-                    output = stBuild.ToString();
-                    stBuild.Clear();
-
-                    return output;
                 default:
                     return "";
             }
@@ -156,103 +106,77 @@ namespace Translate
             return (len > 1 ? ToBin(value >> 1, len - 1) : null) + "01"[value & 1];
         }
 
-        static int BinToInt(string input)             // takes a string of bits and converts it into integer
-        {
-            int output = 0;
-            for (int i = input.Length-1, j=0; i >=0; i--,j++)
-            {
-                if (input[j] == '1')
-                    output += (int)Math.Pow(2, i);
-            }
-            return output;
-        }
-
         static string IntToText(string input)
         {
             stBuild.Clear();
-            if (input.Contains(" "))
-            {
-                string[] numbers = input.Split();
-                long integer = 0;
-                for (int i = 0; i < numbers.Length; i++)
-                {
-                    long.TryParse(numbers[i], out integer);
-                    stBuild.Append((char)integer);
-                }
-                return stBuild.ToString();
-            }
-            else
-            {
-                long integer;
-                long.TryParse(input,out integer);
-                return (integer!=0)?((char)integer).ToString():InputText;                
-            }
-        }
 
-        static string HexToText(string input)                                               // http://stackoverflow.com/questions/724862/converting-from-hex-to-string
-        {
-            stBuild.Clear();
             try
             {
-                string[] insplit = new string[0];               // used when input has spaces
-                if (input.Contains(" "))
-                    insplit = input.Split();
-                int[] raw = new int[(insplit.Length != 0) ? insplit.Length : 1];       // if insplit's length is > 0, raw will take its value. else it will take input's value
-                for (int i = 0; i < raw.Length; i++)
-                {
-                    raw[i] = int.Parse(((insplit.Length != 0) ? insplit[i] : input), System.Globalization.NumberStyles.HexNumber);  // if insplit contains something, insplit will be translated instead.
-                    stBuild.Append((char)raw[i]);
-                }
-                return stBuild.ToString();
+                var numbers = Regex.Split(input, @"\s+").Where(n => n != "").Select(long.Parse).ToList();
+                foreach (var number in numbers)
+                    stBuild.Append((char)number);
             }
-            catch (FormatException)
-            {
-                return (stBuild.Length>0)?stBuild.ToString(): InputText;
-            }
-            catch(OverflowException)
-            {
-                return (stBuild.Length > 0) ? stBuild.ToString() : InputText;
-            }
-        }
-        static string ToHex(int input) => Convert.ToInt64(input).ToString("x2");           // http://stackoverflow.com/questions/12527694/c-sharp-convert-char-to-byte-hex-representation
+            catch (OverflowException) { }
 
-        static string OctToString(string input)
+            return stBuild.ToString();
+        }
+
+        static string OctToText(string input)
         {
-            stBuild.Clear();
-
-            if (input.Contains(" "))
-            {
-                try
-                {
-                    string[] temp = input.Split();
-                    for (int i = 0; i < temp.Length; i++)
-                    {
-                        if (temp[i].Length > 10)
-                            return stBuild.ToString();
-                        stBuild.Append((char)Convert.ToInt32(temp[i], 8));
-                    }
-                    return stBuild.ToString();
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return (stBuild.Length > 0) ? stBuild.ToString() : InputText;
-                }
-            }
-            else
-            {
-                try
-                {
-                    if (input.Length > 10)
-                        return "";
-                    return ((char)Convert.ToInt32(input, 8)).ToString();
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return "";
-                }
-            }
+            var output = Regex.Split(input, @"\s+").Where(i=>i!="").Select(i => (char)ConvertToBase10(i, 8)).ToList();
+            return string.Join("", output);
         }
-        static string ToOct(int input) => Convert.ToString(input, 8);           //http://stackoverflow.com/questions/4123613/formatting-an-integer-as-octal
+
+        static string HexToText(string input)
+        {
+            var output = Regex.Split(input, @"\s+").Select(n=>(char)ConvertToBase10(n,16)).ToList();
+            return string.Join("", output);
+        }
+
+
+        #region Converters
+        private static int ConvertToBase10(string number, int numberBase)
+        {
+            string digits = "0123456789ABCDEF";
+            var numbers = number.ToCharArray().ToList();
+
+            var remstack = new Stack<int>();
+
+            while (numbers.Count > 0)
+            {
+                int index = digits.IndexOf(numbers[0]);
+                remstack.Push(index);
+                numbers.RemoveAt(0);
+            }
+
+            var num = 0;
+            var remStackCount = remstack.Count;
+            for (int i = 0; i < remStackCount; i++)
+                num += (remstack.Pop() * (int)Math.Pow(numberBase, i));
+
+            return num;
+        }
+
+        private static string ConvertToBaseN(int decNumber, int nBase)
+        {
+            string digits = "0123456789ABCDEF";
+
+            var remstack = new Stack<int>();
+
+            while (decNumber > 0)
+            {
+                int rem = (int)(decNumber % (int)nBase);
+                remstack.Push(rem);
+                decNumber /= (int)nBase;
+            }
+
+            var newString = new StringBuilder();
+            while (remstack.Count != 0)
+                newString.Append(digits[remstack.Pop()]);
+
+            return newString.ToString();
+        }
+        #endregion
 
         #endregion
     }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 using Android.App;
 using Android.Content;
@@ -20,6 +22,7 @@ using Tesseract.Droid;
 using XLabs.Ioc;
 using XLabs.Ioc.TinyIOC;
 using XLabs.Platform.Device;
+using Android.Text;
 //using XLabs.Platform.Services.Media;
 
 namespace Ascii___Text
@@ -27,6 +30,13 @@ namespace Ascii___Text
     [Activity(Label = "Ascii to Text", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : Activity
     {
+        #region UI controllers
+        static TextView LabelText, LabelAscii;
+        static EditText TextBox, AsciiBox;
+        Spinner spinner;
+        Button PhotoBT;
+        #endregion
+
         private int _base = 0;                                        //gets the position of the spinner
         public static string OCRtext { set; get; }                  // Stores the OCR text
 
@@ -36,13 +46,13 @@ namespace Ascii___Text
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
-            // Objects
-            var LabelText = FindViewById<TextView>(Resource.Id.LabelText);
-            var LabelAscii = FindViewById<TextView>(Resource.Id.LabelAscii);
-            var TextBox = FindViewById<EditText>(Resource.Id.TextBox);
-            var AsciiBox = FindViewById<EditText>(Resource.Id.AsciiBox);
-            var spinner = FindViewById<Spinner>(Resource.Id.spinner);
-            var photoBT = FindViewById<Button>(Resource.Id.photoBT);
+            // Objects Declaration
+            LabelText = FindViewById<TextView>(Resource.Id.LabelText);
+            LabelAscii = FindViewById<TextView>(Resource.Id.LabelAscii);
+            TextBox = FindViewById<EditText>(Resource.Id.TextBox);
+            AsciiBox = FindViewById<EditText>(Resource.Id.AsciiBox);
+            spinner = FindViewById<Spinner>(Resource.Id.spinner);
+            PhotoBT = FindViewById<Button>(Resource.Id.photoBT);
 
             // Code itself
 
@@ -63,7 +73,7 @@ namespace Ascii___Text
                 Resolver.ResetResolver();
                 Resolver.SetResolver(new TinyResolver(container));
             }
-            else photoBT.Visibility = ViewStates.Invisible;
+            else PhotoBT.Visibility = ViewStates.Invisible;
 
 
             #endregion
@@ -80,51 +90,44 @@ namespace Ascii___Text
 
             #endregion Spinner
 
-            TextBox.TextChanged += delegate
+            TextBox.TextChanged += OnTextBoxTextChange;
+            AsciiBox.TextChanged += OnAsciiBoxTextChange;
+
+            PhotoBT.Click += OnPhotoBTCLick;                           // Gets the OCR text
+
+
+            PhotoBT.LongClick += OnPhotoBTLongClick;                       // Sends the OCR text to the focused box
+        }
+
+        private void OnTextBoxTextChange(object sender, TextChangedEventArgs e)
+        {
+            if (TextBox.IsFocused)
             {
-                if (TextBox.IsFocused)
-                {
-                    LabelText.Text = (TextBox.Text == "") ? "Enter your text here:" : "Your text is:";
-                    LabelAscii.Text = (TextBox.Text == "") ? "Or enter your Ascii code here:" : "Your text in Ascii is:";
-                    AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, (Translator.Base)_base);
-                    Translator.InputText = TextBox.Text;
+                LabelText.Text = (TextBox.Text == "") ? "Enter your text here:" : "Your text is:";
+                LabelAscii.Text = (TextBox.Text == "") ? "Or enter your Ascii code here:" : "Your text in Ascii is:";
+                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, (Translator.Base)_base);
+                Translator.InputText = TextBox.Text;
 
-                    if (TextBox.Text == "")
-                        AsciiBox.Text = "";
-                }
-            };
+                if (TextBox.Text == "")
+                    AsciiBox.Text = "";
+            }
+        }
 
-            AsciiBox.TextChanged += delegate
+        private void OnAsciiBoxTextChange(object sender, TextChangedEventArgs e)
+        {
+            if (AsciiBox.IsFocused)
             {
-                if (AsciiBox.IsFocused)
-                {
-                    LabelText.Text = (AsciiBox.Text == "") ? "Enter your text here:" : "Your text is:";
-                    LabelAscii.Text = (AsciiBox.Text == "") ? "Or enter your Ascii code here:" : "Your text in Ascii is:";
+                LabelText.Text = (AsciiBox.Text == "") ? "Enter your text here:" : "Your text is:";
+                LabelAscii.Text = (AsciiBox.Text == "") ? "Or enter your Ascii code here:" : "Your text in Ascii is:";
 
-                    if (Translatable())
-                        TextBox.Text = Translator.ConvertTo(Translator.Type.Text, AsciiBox.Text, (Translator.Base)_base);
+                if (Translatable())
+                    TextBox.Text = Translator.ConvertTo(Translator.Type.Text, AsciiBox.Text, (Translator.Base)_base);
 
-                    Translator.InputText = TextBox.Text;
+                Translator.InputText = TextBox.Text;
 
-                    if (AsciiBox.Text == "")
-                        TextBox.Text = "";
-                }
-            };
-
-            photoBT.Click += (object sender, EventArgs e) =>                            // Gets the OCR text
-             {
-                 OCR.CeatePicture();
-                 TextBox.Text = "After taking the photo wait for a few seconds and hold the \"Take a photo\" button to view the text.";
-                 AsciiBox.Text = "";
-             };
-
-            photoBT.LongClick += delegate                       // Sends the OCR text to the focused box
-              {
-                  if (TextBox.IsFocused)
-                      TextBox.Text = OCRtext;
-                  else
-                      AsciiBox.Text = OCRtext;
-              };
+                if (AsciiBox.Text == "")
+                    TextBox.Text = "";
+            }
         }
 
         private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
@@ -137,72 +140,51 @@ namespace Ascii___Text
             var AsciiBox = FindViewById<EditText>(Resource.Id.AsciiBox);
 
             //Conversion Code
-            if (e.Position == (int)Translator.Base.Binary)                                                                    
-                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Binary);
+            switch (e.Position)
+            {
+                case (int)Translator.Base.Binary:
+                    AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Binary);      break;
+                case (int)Translator.Base.Decimal:
+                    AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Decimal);     break;
+                case (int)Translator.Base.Hexadecimal:
+                    AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Hexadecimal); break;
+                case (int)Translator.Base.Octadecimal:
+                    AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Octadecimal); break;
+            }
+        }
 
-            if (e.Position == (int)Translator.Base.Decimal)                                                                       
-                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Decimal);
+        private void OnPhotoBTCLick(object sender, EventArgs e)
+        {
+            OCR.CeatePicture();
+            TextBox.Text = "After taking the photo wait for a few seconds and hold the \"Take a photo\" button to view the text.";
+            AsciiBox.Text = "";
+        }
 
-            if (e.Position == (int)Translator.Base.Hexadecimal)                                                                       
-                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Hexadecimal);
-
-            if (e.Position == (int)Translator.Base.Octadecimal)                                                                    
-                AsciiBox.Text = Translator.ConvertTo(Translator.Type.Ascii, TextBox.Text, Translator.Base.Octadecimal);
-
+        private void OnPhotoBTLongClick(object sender, View.LongClickEventArgs e)
+        {
+            if (TextBox.IsFocused)
+                TextBox.Text = OCRtext;
+            else
+                AsciiBox.Text = OCRtext;
         }
 
         private bool Translatable()                                    // Checks if Ascii can be converted into text
         {
-            var AsciiBox = FindViewById<EditText>(Resource.Id.AsciiBox);
-
-            bool translatable = true;
             switch ((Translator.Base)_base)
             {
                 case Translator.Base.Binary: // Base 2
-                    for (int i = 0; i < AsciiBox.Text.Length; i++)
-                    {
-                        if (AsciiBox.Text[i] == '0' || AsciiBox.Text[i] == '1' || AsciiBox.Text[i] == ' ')
-                            continue;
-                        else
-                            translatable = false;
-                    }
-                    break;
+                    return !Regex.IsMatch(AsciiBox.Text, @"[^01\s]");
 
-                case Translator.Base.Decimal:                                                     
-                    for (int i = 0; i < AsciiBox.Text.Length; i++)
-                    {
-                        if ((AsciiBox.Text[i] >= '0' && AsciiBox.Text[i] <= '9') || AsciiBox.Text[i] == ' ')
-                            continue;
-                        else
-                            translatable = false;
-                    }
-                    if (AsciiBox.Text == "")
-                        return false;
-                    break;
+                case Translator.Base.Decimal:
+                    return !Regex.IsMatch(AsciiBox.Text, @"[^0-9\s]");
 
-                case Translator.Base.Hexadecimal:                                         
-                    string text = AsciiBox.Text;
-                    for (int i = 0; i < text.Length; i++)
-                    {
-                        if ((text[i] >= 'A' && text[i] <= 'Z') || (text[i] >= 'a' && text[i] <= 'z') || (text[i] >= '0' && text[i] <= '9') || text[i] == ' ')
-                            continue;
-                        else
-                            return false;
-                    }
-                    break;
+                case Translator.Base.Hexadecimal:
+                    return !Regex.IsMatch(AsciiBox.Text, @"[^a-fA-F0-9\s]");
 
-                case Translator.Base.Octadecimal:                                         
-                    for (int i = 0; i < AsciiBox.Text.Length; i++)
-                    {
-                        if ((AsciiBox.Text[i] >= '0' && AsciiBox.Text[i] <= '7') || AsciiBox.Text[i] == ' ')
-                            continue;
-                        else
-                            translatable = false;
-                    }
-                    break;
+                case Translator.Base.Octadecimal:
+                    return !Regex.IsMatch(AsciiBox.Text, @"[^0-9\s]");
             }
-            return translatable;
+            return false;
         }
     }
 }
-
